@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import ua.com.peoplepulse.productcatalog.model.Product;
-import ua.com.peoplepulse.productcatalog.servises.ProductServises;
+import ua.com.peoplepulse.productcatalog.servises.ProductService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ProductcatalogApplication {
 
-	private final ProductServises productServices;
+	private final ProductService productServices;
 
 	@Bean
 	public CommandLineRunner commandLineRunner() {

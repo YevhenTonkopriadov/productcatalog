@@ -6,15 +6,16 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import ua.com.peoplepulse.productcatalog.controller.dto.CreateProductRequest;
 import ua.com.peoplepulse.productcatalog.model.Product;
 import ua.com.peoplepulse.productcatalog.repositories.ProductRepositories;
-
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ProductServises {
+public class ProductService {
 
     private final ProductRepositories productRepositories;
 
@@ -44,9 +45,14 @@ public class ProductServises {
             @CacheEvict(value = "allProducts",allEntries = true)
     })
     public Product updateProduct (Product product) {
-        Product savedProduct = productRepositories.save (product);
-        log.info("Service: Saving product with name{}", savedProduct.getId());
-        return savedProduct;
+        Product updatedProduct = productRepositories.findById(product.getId()).get();
+        updatedProduct.setName(product.getName());
+        updatedProduct.setDescription(product.getDescription());
+        updatedProduct.setPrice(product.getPrice());
+        updatedProduct.setCategory(product.getCategory());
+        updatedProduct.setLastUpdated(LocalDateTime.now());
+        log.info("Service: Saving product with name{}", updatedProduct.getId());
+        return productRepositories.save(updatedProduct);
     }
 
     @Caching(evict = {

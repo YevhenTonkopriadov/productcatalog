@@ -18,14 +18,14 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "user name is required")
+    @NotEmpty(message = "name is required")
     private String name;
     private String description;
 
-    @NotNull(message = "user age is required")
+    @NotNull(message = "price is required")
     private BigDecimal price;
     private String category;
-    private Integer Stock;
+    private Integer stock;
     private LocalDateTime created;
     private LocalDateTime lastUpdated;
 }

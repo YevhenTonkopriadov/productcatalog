@@ -3,36 +3,41 @@ package ua.com.peoplepulse.productcatalog.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ua.com.peoplepulse.productcatalog.controller.dto.CreateProductRequest;
+import ua.com.peoplepulse.productcatalog.controller.dto.ProductResponse;
+import ua.com.peoplepulse.productcatalog.controller.dto.UpdateProductRequest;
+import ua.com.peoplepulse.productcatalog.facade.ProductFacade;
 import ua.com.peoplepulse.productcatalog.model.Product;
-import ua.com.peoplepulse.productcatalog.servises.ProductServises;
-import java.time.LocalDateTime;
+import ua.com.peoplepulse.productcatalog.servises.ProductService;
 
-@Controller
+import java.util.List;
+
+@Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
 @ResponseBody
-@Slf4j
-public class ControllerAPI {
+public class ProductController {
 
-    private final ProductServises productServices;
+    private final ProductFacade productFacade;
+    private final ProductService productServices;
 
     @GetMapping
-    public Iterable <Product>  findAllProducts() {
-        return productServices.findAll();
+    public List<ProductResponse> findAllProducts() {
+        return productFacade.findAll();
     }
     @PostMapping
-    public Product createProduct(@Valid @RequestBody Product product) {
-        return productServices.createProduct(product);
+    public Product createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
+        return productFacade.createProduct(createProductRequest);
     };
 
     @GetMapping (path = "/{id}")
-    public Product findProductById (@PathVariable String id) {
+    public ProductResponse findProductById (@PathVariable String id) {
         try{
             Long productId = Long.parseLong(id);
             if (productServices.findById(productId).isPresent())
-                return productServices.findById(productId).get();
+                return productFacade.findById(productId);
             else {
                 log.info("Controller:Product {} can't finding", id);
                 return null;
@@ -44,21 +49,10 @@ public class ControllerAPI {
     };
 
     @PutMapping (path ="/{id}")
-    public Product updateProduct(@PathVariable String id, @Valid @RequestBody Product product) {
+    public Product updateProduct(@PathVariable String id, @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         try {
             Long productId = Long.parseLong(id);
-            if (productServices.findById(productId).isPresent()) {
-                Product updatedProduct = productServices.findById(productId).get();
-                updatedProduct.setName(product.getName());
-                updatedProduct.setDescription(product.getDescription());
-                updatedProduct.setPrice(product.getPrice());
-                updatedProduct.setCategory(product.getCategory());
-                updatedProduct.setLastUpdated(LocalDateTime.now());
-                return productServices.updateProduct(updatedProduct);
-            } else {
-                log.info("Controller:Product {} can't updating", id);
-                return null;
-            }
+            return productFacade.updateProduct(updateProductRequest);
         }
         catch (NumberFormatException e) {
             log.info("Controller:Product {} can't updating", id);
@@ -79,7 +73,7 @@ public class ControllerAPI {
     }
 
     @GetMapping (path = "/category/{category}")
-    public Iterable <Product>  findAllProductsByCategory (@PathVariable String category) {
-        return productServices.findByCategory(category);
+    public List <ProductResponse>  findAllProductsByCategory (@PathVariable String category) {
+        return productFacade.findByCategory(category);
     }
 }
