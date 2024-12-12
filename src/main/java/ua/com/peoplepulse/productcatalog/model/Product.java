@@ -27,5 +27,7 @@ public class Product {
     private String category;
     private Integer stock;
     private LocalDateTime created;
+
+    @Column (name = "LASTUPDATED")
     private LocalDateTime lastUpdated;
 }
