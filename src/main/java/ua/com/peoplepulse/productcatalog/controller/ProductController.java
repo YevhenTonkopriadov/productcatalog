@@ -10,7 +10,6 @@ import ua.com.peoplepulse.productcatalog.controller.dto.UpdateProductRequest;
 import ua.com.peoplepulse.productcatalog.facade.ProductFacade;
 import ua.com.peoplepulse.productcatalog.model.Product;
 import ua.com.peoplepulse.productcatalog.servises.ProductService;
-
 import java.util.List;
 
 @Slf4j
@@ -33,43 +32,18 @@ public class ProductController {
     };
 
     @GetMapping (path = "/{id}")
-    public ProductResponse findProductById (@PathVariable String id) {
-        try{
-            Long productId = Long.parseLong(id);
-            if (productServices.findById(productId).isPresent())
-                return productFacade.findById(productId);
-            else {
-                log.info("Controller:Product {} can't finding", id);
-                return null;
-            }
-        } catch (NumberFormatException e) {
-            log.info("Controller:Product {} can't finding", id);
-            return null;
-        }
+    public ProductResponse findProductById (@PathVariable Long id) {
+        return productFacade.findById(id);
     };
 
     @PutMapping (path ="/{id}")
-    public Product updateProduct(@PathVariable String id, @Valid @RequestBody UpdateProductRequest updateProductRequest) {
-        try {
-            Long productId = Long.parseLong(id);
-            return productFacade.updateProduct(updateProductRequest);
-        }
-        catch (NumberFormatException e) {
-            log.info("Controller:Product {} can't updating", id);
-            return null;
-        }
+    public Product updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest updateProductRequest) {
+        return productFacade.updateProduct(id,updateProductRequest);
     }
 
     @DeleteMapping (path = "/{id}")
-    public void deleteProductById(@PathVariable String id) {
-        try{
-            Long productId = Long.parseLong(id);
-            if (productServices.findById(productId).isPresent())
-                productServices.deleteById(productId);
-            else log.info("Controller:Product {} can't delete", id);
-        } catch (NumberFormatException e) {
-            log.info("Controller:Product {} can't delete", id);
-        }
+    public void deleteProductById(@PathVariable Long id) {
+        productServices.deleteById(id);
     }
 
     @GetMapping (path = "/category/{category}")

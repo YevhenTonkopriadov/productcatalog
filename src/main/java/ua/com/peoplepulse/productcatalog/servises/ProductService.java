@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import ua.com.peoplepulse.productcatalog.controller.dto.CreateProductRequest;
+import ua.com.peoplepulse.productcatalog.ProductNotFoundException;
 import ua.com.peoplepulse.productcatalog.model.Product;
 import ua.com.peoplepulse.productcatalog.repositories.ProductRepositories;
 import java.time.LocalDateTime;
@@ -56,13 +56,16 @@ public class ProductService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "singleProduct", key = "#productId"),
             @CacheEvict(value = "productByCategory", allEntries = true),
             @CacheEvict (value = "allProducts",allEntries = true)
     })
-    public void  deleteById (Long productId){
-        log.info("Service: Deleting product with id {}", productId);
-        productRepositories.deleteById(productId);
+    public void  deleteById (Long id){
+        try{Product product = productRepositories.findById(id).get();
+            productRepositories.deleteById(id);
+            log.info("Service: Deleting product with id {}", id);
+        } catch (Exception e){
+            throw new ProductNotFoundException(id);
+        }
     };
 
     @Cacheable(value = "singleProduct", key = "#productId")
