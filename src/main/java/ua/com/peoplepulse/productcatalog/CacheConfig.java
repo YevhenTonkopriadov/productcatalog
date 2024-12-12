@@ -17,7 +17,7 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     @Bean
     public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("singleProduct", "productByCategory","allProducts");
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("singleProduct", "productByCategory", "allProducts");
         cacheManager.setCaffeine(caffeineCacheBuilder());
         return cacheManager;
     }

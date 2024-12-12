@@ -3,8 +3,10 @@ package ua.com.peoplepulse.productcatalog.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -28,6 +30,6 @@ public class Product {
     private Integer stock;
     private LocalDateTime created;
 
-    @Column (name = "LASTUPDATED")
+    @Column(name = "LASTUPDATED")
     private LocalDateTime lastUpdated;
 }
