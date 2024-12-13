@@ -1,6 +1,7 @@
 package ua.com.peoplepulse.productcatalog.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode
 @Table(name = "product")
 public class Product {
 

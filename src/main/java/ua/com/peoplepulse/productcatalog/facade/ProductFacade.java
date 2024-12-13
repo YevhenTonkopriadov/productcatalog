@@ -6,20 +6,22 @@ import ua.com.peoplepulse.productcatalog.ProductNotFoundException;
 import ua.com.peoplepulse.productcatalog.controller.dto.CreateProductRequest;
 import ua.com.peoplepulse.productcatalog.controller.dto.ProductResponse;
 import ua.com.peoplepulse.productcatalog.controller.dto.UpdateProductRequest;
+import ua.com.peoplepulse.productcatalog.convert.ProductToProductResponseConverter;
 import ua.com.peoplepulse.productcatalog.model.Product;
 import ua.com.peoplepulse.productcatalog.servises.ProductService;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
 public class ProductFacade {
 
     private final ProductService productService;
+    private final ProductToProductResponseConverter productToProductResponseConverter;
 
-    public Product createProduct(CreateProductRequest createProductRequest) {
+    public ProductResponse createProduct(CreateProductRequest createProductRequest) {
         Product createProduct = new Product();
         createProduct.setName(createProductRequest.getName());
         createProduct.setDescription(createProductRequest.getDescription());
@@ -28,10 +30,10 @@ public class ProductFacade {
         createProduct.setLastUpdated(LocalDateTime.now());
         createProduct.setCreated(LocalDateTime.now());
         createProduct.setStock(createProductRequest.getStock());
-        return productService.createProduct(createProduct);
+        return productToProductResponseConverter.convert(productService.createProduct(createProduct));
     }
 
-    public Product updateProduct(Long id, UpdateProductRequest updateProductRequest) {
+    public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) {
         try {
             Product updateProduct = productService.findById(id).get();
             updateProduct.setName(updateProductRequest.getName());
@@ -40,7 +42,7 @@ public class ProductFacade {
             updateProduct.setCategory(updateProductRequest.getCategory());
             updateProduct.setLastUpdated(LocalDateTime.now());
             updateProduct.setStock(updateProductRequest.getStock());
-            return productService.updateProduct(updateProduct);
+            return productToProductResponseConverter.convert(productService.updateProduct(updateProduct));
         } catch (Exception e) {
             throw new ProductNotFoundException(id);
         }
@@ -49,29 +51,15 @@ public class ProductFacade {
 
     public List<ProductResponse> findAll() {
         Iterable<Product> iterableProducts = productService.findAll();
-        List<ProductResponse> productList = new ArrayList<>();
-        for (Product product : iterableProducts) {
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setId(product.getId());
-            productResponse.setName(product.getName());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setCategory(product.getCategory());
-            productList.add(productResponse);
-        }
-        return productList;
+        return StreamSupport.stream(iterableProducts.spliterator(), false)
+                .map(productToProductResponseConverter::convert)
+                .collect(Collectors.toList());
     }
 
     public ProductResponse findById(Long productId) {
         try {
             Product product = productService.findById(productId).get();
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setId(product.getId());
-            productResponse.setName(product.getName());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setCategory(product.getCategory());
-            return productResponse;
+            return productToProductResponseConverter.convert(product);
         } catch (Exception e) {
             throw new ProductNotFoundException(productId);
         }
@@ -79,17 +67,8 @@ public class ProductFacade {
 
     public List<ProductResponse> findByCategory(String category) {
         Iterable<Product> iterableProducts = productService.findByCategory(category);
-        System.out.println();
-        List<ProductResponse> productList = new ArrayList<>();
-        for (Product product : iterableProducts) {
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setId(product.getId());
-            productResponse.setName(product.getName());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setCategory(product.getCategory());
-            productList.add(productResponse);
-        }
-        return productList;
+        return StreamSupport.stream(iterableProducts.spliterator(), false)
+                .map(productToProductResponseConverter::convert)
+                .collect(Collectors.toList());
     }
 }

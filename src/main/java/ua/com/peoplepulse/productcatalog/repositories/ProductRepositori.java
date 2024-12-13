@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import ua.com.peoplepulse.productcatalog.model.Product;
 
 @Repository
-public interface ProductRepositories extends CrudRepository<Product, Long> {
+public interface ProductRepositori extends CrudRepository<Product, Long> {
 
     @Query("select c from Product c where c.category = ?1")
     Iterable<Product> findAllByCategory(String category);

@@ -6,19 +6,20 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.com.peoplepulse.productcatalog.ProductNotFoundException;
 import ua.com.peoplepulse.productcatalog.model.Product;
-import ua.com.peoplepulse.productcatalog.repositories.ProductRepositories;
-
+import ua.com.peoplepulse.productcatalog.repositories.ProductRepositori;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
 
-    private final ProductRepositories productRepositories;
+    private final ProductRepositori productRepositories;
 
     @Cacheable(value = "allProducts")
     public Iterable<Product> findAll() {
@@ -38,7 +39,7 @@ public class ProductService {
     })
     public Product createProduct(Product product) {
         Product savedProduct = productRepositories.save(product);
-        log.info("Service: Saving product with name{}", savedProduct.getId());
+        log.info("Service: Saving product with name {}", savedProduct.getId());
         return savedProduct;
     }
 
@@ -53,7 +54,7 @@ public class ProductService {
         updatedProduct.setPrice(product.getPrice());
         updatedProduct.setCategory(product.getCategory());
         updatedProduct.setLastUpdated(LocalDateTime.now());
-        log.info("Service: Saving product with name{}", updatedProduct.getId());
+        log.info("Service: Saving product with name {}", updatedProduct.getId());
         return productRepositories.save(updatedProduct);
     }
 

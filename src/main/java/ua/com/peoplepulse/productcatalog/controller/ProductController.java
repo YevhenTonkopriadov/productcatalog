@@ -8,7 +8,6 @@ import ua.com.peoplepulse.productcatalog.controller.dto.CreateProductRequest;
 import ua.com.peoplepulse.productcatalog.controller.dto.ProductResponse;
 import ua.com.peoplepulse.productcatalog.controller.dto.UpdateProductRequest;
 import ua.com.peoplepulse.productcatalog.facade.ProductFacade;
-import ua.com.peoplepulse.productcatalog.model.Product;
 import ua.com.peoplepulse.productcatalog.servises.ProductService;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
+    public ProductResponse createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         return productFacade.createProduct(createProductRequest);
     }
 
@@ -39,7 +38,7 @@ public class ProductController {
     }
 
     @PutMapping(path = "/{id}")
-    public Product updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest updateProductRequest) {
+    public ProductResponse updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return productFacade.updateProduct(id, updateProductRequest);
     }
 

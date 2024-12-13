@@ -9,3 +9,5 @@ CREATE TABLE product (
                          lastUpdated TIMESTAMP NOT NULL,
                          PRIMARY KEY (id)
 );
+
+CREATE INDEX idx_product_category ON product (category);

@@ -11,9 +11,6 @@ import java.math.BigDecimal;
 @Setter
 public class UpdateProductRequest {
 
-    @NotNull(message = "ID is required")
-    private Long id;
-
     @NotEmpty(message = "name is required")
     private String name;
     private String description;

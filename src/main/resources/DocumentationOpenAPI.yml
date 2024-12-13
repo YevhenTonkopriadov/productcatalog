@@ -1,4 +1,4 @@
-penapi: 3.0.3
+openapi: 3.0.3
 info:
   title: Simple Product API
   description: A simple API for managing products.
@@ -30,8 +30,10 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
       responses:
-        '201':
+        '200':
           description: Product created
+        '400':
+          description: Product didnt creat. Bad Request
   /products/{id}:
     get:
       summary: Get a product by ID
@@ -42,13 +44,7 @@ paths:
           required: true
           description: The ID of the product
           schema:
-            type: Long
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Product'
+            type: integer
       responses:
         '200':
           description: Product details
@@ -56,6 +52,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
+        '400':
+          description: Product not found. Bed request
         '404':
           description: Product not found
     put:
@@ -67,7 +65,7 @@ paths:
           required: true
           description: The ID of the product
           schema:
-            type: Long
+            type: number
       requestBody:
         required: true
         content:
@@ -75,14 +73,16 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
       responses:
-        '201':
+        '200':
           description: Product details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
+        '400':
+          description: Product didnt update. Bad Request
         '404':
-          description: Product not found
+          description: Product not found by ID
     delete:
       summary: Delete a product by ID
       operationId: deleteProductById
@@ -92,13 +92,13 @@ paths:
           required: true
           description: The ID of the product
           schema:
-            type: Long
+            type: integer
       responses:
         '200':
           description: Product deleted
         '404':
           description: Product not found
-  products/category/{category}:
+  /products/category/{category}:
     get:
       summary: Get a product by category
       operationId: getProductByCategory
@@ -108,7 +108,7 @@ paths:
           required: true
           description: The category of the product
           schema:
-            type: String
+            type: string
       responses:
         '200':
           description: A list of products
@@ -116,14 +116,15 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/Product'
+                items:
+                  $ref: '#/components/schemas/Product'
 components:
   schemas:
     Product:
       type: object
       properties:
         id:
-          type: Long
+          type: integer
           description: The product ID
         name:
           type: string
@@ -139,7 +140,7 @@ components:
           type: string
           description: The category of the product
         stock:
-          type: Integer
+          type: integer
           description: The available stock
         created:
           type: string
